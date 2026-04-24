@@ -1,0 +1,27 @@
+-- Seed: config.GlobalSettings -- Columns: Id, Key, Value, DataType, Description, IsPublic, ModifiedOn
+INSERT INTO config."GlobalSettings" ("Id", "Key", "Value", "DataType", "Description", "IsPublic", "ModifiedOn") VALUES
+    (gen_random_uuid(), 'site.name', 'JobPortal', 'String', 'Platform display name', TRUE, NOW()),
+    (gen_random_uuid(), 'site.tagline', 'Find your dream job today', 'String', 'Homepage tagline', TRUE, NOW()),
+    (gen_random_uuid(), 'site.url', 'https://jobportal.io', 'String', 'Canonical public URL', TRUE, NOW()),
+    (gen_random_uuid(), 'site.support_email', 'support@jobportal.io', 'String', 'Support contact email', TRUE, NOW()),
+    (gen_random_uuid(), 'site.noreply_email', 'noreply@jobportal.io', 'String', 'No-reply sender address', FALSE, NOW()),
+    (gen_random_uuid(), 'site.maintenance_mode', 'false', 'Boolean', 'Put site in maintenance mode', FALSE, NOW()),
+    (gen_random_uuid(), 'site.registration_open', 'true', 'Boolean', 'Allow new tenant/recruiter registration', FALSE, NOW()),
+    (gen_random_uuid(), 'job.default_expiry_days', '30', 'Integer', 'Days a job posting stays active by default', FALSE, NOW()),
+    (gen_random_uuid(), 'job.featured_expiry_days', '7', 'Integer', 'Days a featured job stays in spotlight', FALSE, NOW()),
+    (gen_random_uuid(), 'application.max_per_user_per_job', '1', 'Integer', 'Max applications per user per job', FALSE, NOW()),
+    (gen_random_uuid(), 'application.allow_withdraw', 'true', 'Boolean', 'Allow applicants to withdraw application', FALSE, NOW()),
+    (gen_random_uuid(), 'search.results_per_page', '20', 'Integer', 'Default page size for job search', FALSE, NOW()),
+    (gen_random_uuid(), 'search.max_results_per_page', '100', 'Integer', 'Maximum page size allowed', FALSE, NOW()),
+    (gen_random_uuid(), 'auth.jwt_expiry_minutes', '60', 'Integer', 'JWT access token lifetime in minutes', FALSE, NOW()),
+    (gen_random_uuid(), 'auth.refresh_token_expiry_days', '30', 'Integer', 'Refresh token lifetime in days', FALSE, NOW()),
+    (gen_random_uuid(), 'auth.max_failed_login_attempts', '5', 'Integer', 'Lockout threshold for failed logins', FALSE, NOW()),
+    (gen_random_uuid(), 'auth.lockout_duration_minutes', '30', 'Integer', 'Account lockout duration in minutes', FALSE, NOW()),
+    (gen_random_uuid(), 'auth.email_verification_required', 'true', 'Boolean', 'Require email verification before login', FALSE, NOW()),
+    (gen_random_uuid(), 'auth.otp_expiry_minutes', '10', 'Integer', 'OTP code validity window in minutes', FALSE, NOW()),
+    (gen_random_uuid(), 'auth.password_reset_expiry_hours', '24', 'Integer', 'Password reset link validity in hours', FALSE, NOW()),
+    (gen_random_uuid(), 'notification.email_from_name', 'JobPortal', 'String', 'Display name for outgoing emails', FALSE, NOW()),
+    (gen_random_uuid(), 'upload.max_resume_size_mb', '5', 'Integer', 'Max allowed resume file size in MB', FALSE, NOW()),
+    (gen_random_uuid(), 'upload.allowed_resume_types', 'pdf,doc,docx', 'String', 'Comma-separated allowed resume extensions', FALSE, NOW()),
+    (gen_random_uuid(), 'upload.max_avatar_size_mb', '2', 'Integer', 'Max allowed profile picture size in MB', FALSE, NOW())
+ON CONFLICT DO NOTHING;

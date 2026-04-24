@@ -1,0 +1,137 @@
+# ============================================================
+# JobPortal — Docker Compose
+# Usage:
+#   cp .env.example .env          # fill in secrets
+#   docker compose up -d --build
+# ============================================================
+
+name: jobportal
+
+services:
+
+  # ── PostgreSQL ────────────────────────────────────────────────
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB:-jobportal}
+      POSTGRES_USER:     ${POSTGRES_USER:-jpuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-jpuser} -d ${POSTGRES_DB:-jobportal}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - backend
+
+  # ── Redis ─────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD is required} --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redisdata:/data
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+  # ── .NET API ──────────────────────────────────────────────────
+  api:
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+
+      # Database
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=${POSTGRES_DB:-jobportal};Username=${POSTGRES_USER:-jpuser};Password=${POSTGRES_PASSWORD};Pooling=true;Minimum Pool Size=2;Maximum Pool Size=20;"
+
+      # Redis
+      ConnectionStrings__Redis: "redis:6379,password=${REDIS_PASSWORD},abortConnect=false,ssl=false"
+
+      # JWT (RS256) — keys loaded from mounted appsettings.Secrets.json
+      Jwt__Issuer:   ${JWT_ISSUER:-http://localhost:5000}
+      Jwt__Audience: ${JWT_AUDIENCE:-http://localhost}
+
+      # Email (MailHog in dev, real SMTP in prod)
+      Email__SenderName:    ${EMAIL_SENDER_NAME:-JobPortal}
+      Email__SenderAddress: ${EMAIL_SENDER_ADDRESS:-noreply@jobportal.com}
+      Email__SmtpHost:      ${SMTP_HOST:-mailhog}
+      Email__SmtpPort:      ${SMTP_PORT:-1025}
+      Email__SmtpUser:      ${SMTP_USER:-}
+      Email__SmtpPassword:  ${SMTP_PASSWORD:-}
+
+      # CORS
+      Cors__AllowedOrigins__0: "http://localhost:3000"
+      Cors__AllowedOrigins__1: "http://localhost:80"
+      Cors__AllowedOrigins__2: "http://localhost"
+
+    ports:
+      - "5000:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - api_logs:/app/logs
+      # Mount generated secrets (JWT keys + pepper) — never baked into image
+      - ./src/backend/src/JobPortal.API/appsettings.Secrets.json:/app/appsettings.Secrets.json:ro
+    networks:
+      - backend
+      - frontend
+
+  # ── React / Nginx ─────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: /api/v1
+        VITE_TENANT_ID: "00000000-0000-0000-0000-000000000001"
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    networks:
+      - frontend
+
+  # ── MailHog (dev SMTP catcher) ────────────────────────────────
+  mailhog:
+    image: mailhog/mailhog:latest
+    restart: unless-stopped
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    networks:
+      - backend
+    profiles:
+      - dev           # only starts with: docker compose --profile dev up
+
+# ── Volumes ────────────────────────────────────────────────────
+volumes:
+  pgdata:
+  redisdata:
+  api_logs:
+
+# ── Networks ───────────────────────────────────────────────────
+networks:
+  backend:
+  frontend:

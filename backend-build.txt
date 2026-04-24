@@ -1,0 +1,14 @@
+﻿  Determining projects to restore...
+  All projects are up-to-date for restore.
+  JobPortal.Domain -> C:\JobPortal\src\backend\src\JobPortal.Domain\bin\Debug\net10.0\JobPortal.Domain.dll
+  JobPortal.Application -> C:\JobPortal\src\backend\src\JobPortal.Application\bin\Debug\net10.0\JobPortal.Application.dll
+  JobPortal.Infrastructure -> C:\JobPortal\src\backend\src\JobPortal.Infrastructure\bin\Debug\net10.0\JobPortal.Infrastructure.dll
+  JobPortal.UnitTests -> C:\JobPortal\src\backend\tests\JobPortal.UnitTests\bin\Debug\net10.0\JobPortal.UnitTests.dll
+  JobPortal.API -> C:\JobPortal\src\backend\src\JobPortal.API\bin\Debug\net10.0\JobPortal.API.dll
+  JobPortal.IntegrationTests -> C:\JobPortal\src\backend\tests\JobPortal.IntegrationTests\bin\Debug\net10.0\JobPortal.IntegrationTests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.26

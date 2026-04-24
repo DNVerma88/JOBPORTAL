@@ -1,0 +1,112 @@
+﻿docker :  Image jobportal-db Building 
+At line:1 char:1
++ docker compose --profile dev build --no-cache api 2>&1 | Out-File c:\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Image jobportal-db Building :Str 
+   ing) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Image jobportal-api Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 921B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.68kB done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for mcr.microsoft.com/dotnet/sdk:10.0
+#3 DONE 0.1s
+
+#4 [internal] load metadata for mcr.microsoft.com/dotnet/aspnet:10.0
+#4 DONE 0.1s
+
+#5 [internal] load .dockerignore
+#5 transferring context: 92B done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 DONE 0.0s
+
+#7 [build  1/10] FROM mcr.microsoft.com/dotnet/sdk:10.0@sha256:f061e5a7532b36fa1d1b684857fe1f504ba92115b9934f154643266613c44c62
+#7 resolve mcr.microsoft.com/dotnet/sdk:10.0@sha256:f061e5a7532b36fa1d1b684857fe1f504ba92115b9934f154643266613c44c62 0.1s done
+#7 DONE 0.1s
+
+#8 [build  2/10] WORKDIR /source
+#8 CACHED
+
+#9 [runtime 1/5] FROM mcr.microsoft.com/dotnet/aspnet:10.0@sha256:ccdca44cd4f256d50187f920dc8ccc2a9ea7a8a4597ac1d51e08fddb2e3b3205
+#9 resolve mcr.microsoft.com/dotnet/aspnet:10.0@sha256:ccdca44cd4f256d50187f920dc8ccc2a9ea7a8a4597ac1d51e08fddb2e3b3205 0.1s done
+#9 DONE 0.1s
+
+#10 [runtime 2/5] WORKDIR /app
+#10 CACHED
+
+#6 [internal] load build context
+#6 transferring context: 15.83kB 0.0s done
+#6 DONE 0.1s
+
+#11 [build  3/10] COPY NuGet.Config ./
+#11 DONE 0.1s
+
+#12 [runtime 3/5] RUN groupadd --system --gid 1001 appgroup  && useradd  --system --uid 1001 --gid appgroup --no-create-home appuser
+#12 ...
+
+#13 [build  4/10] COPY src/JobPortal.Domain/JobPortal.Domain.csproj             src/JobPortal.Domain/
+#13 DONE 0.1s
+
+#14 [build  5/10] COPY src/JobPortal.Application/JobPortal.Application.csproj   src/JobPortal.Application/
+#14 DONE 0.1s
+
+#12 [runtime 3/5] RUN groupadd --system --gid 1001 appgroup  && useradd  --system --uid 1001 --gid appgroup --no-create-home appuser
+#12 0.483 useradd warning: appuser's uid 1001 is greater than SYS_UID_MAX 999
+#12 DONE 0.6s
+
+#15 [build  6/10] COPY src/JobPortal.Infrastructure/JobPortal.Infrastructure.csproj src/JobPortal.Infrastructure/
+#15 DONE 0.2s
+
+#16 [build  7/10] COPY src/JobPortal.API/JobPortal.API.csproj                   src/JobPortal.API/
+#16 DONE 0.1s
+
+#17 [build  8/10] RUN dotnet restore src/JobPortal.API/JobPortal.API.csproj
+#17 1.026   Determining projects to restore...
+#17 5.453   Restored /source/src/JobPortal.Domain/JobPortal.Domain.csproj (in 3.51 sec).
+#17 6.239   Restored /source/src/JobPortal.Application/JobPortal.Application.csproj (in 4.35 sec).
+#17 7.984   Restored /source/src/JobPortal.API/JobPortal.API.csproj (in 6.09 sec).
+#17 9.371   Restored /source/src/JobPortal.Infrastructure/JobPortal.Infrastructure.csproj (in 7.48 sec).
+#17 DONE 11.9s
+
+#18 [build  9/10] COPY src/ src/
+#18 DONE 0.2s
+
+#19 [build 10/10] RUN dotnet publish src/JobPortal.API/JobPortal.API.csproj     -c Release     -o /app/publish     --no-restore
+#19 4.953   JobPortal.Domain -> /source/src/JobPortal.Domain/bin/Release/net10.0/JobPortal.Domain.dll
+#19 6.261   JobPortal.Application -> /source/src/JobPortal.Application/bin/Release/net10.0/JobPortal.Application.dll
+#19 6.959   JobPortal.Infrastructure -> /source/src/JobPortal.Infrastructure/bin/Release/net10.0/JobPortal.Infrastructure.dll
+#19 8.174   JobPortal.API -> /source/src/JobPortal.API/bin/Release/net10.0/JobPortal.API.dll
+#19 8.227   JobPortal.API -> /app/publish/
+#19 DONE 8.4s
+
+#20 [runtime 4/5] COPY --from=build --chown=appuser:appgroup /app/publish .
+#20 DONE 0.2s
+
+#21 [runtime 5/5] RUN mkdir -p /app/logs && chown appuser:appgroup /app/logs
+#21 DONE 0.3s
+
+#22 exporting to image
+#22 exporting layers
+#22 exporting layers 0.9s done
+#22 exporting manifest sha256:bfdd8bddabb7fe40bad80dafdd698134d012d68cf42167fe17c224acf4959970 0.0s done
+#22 exporting config sha256:d5a93b51c47eb28fc2151d616dad557f0adfddca103dc9fc3ea6bd7f5f16dade 0.0s done
+#22 exporting attestation manifest sha256:37a079030b095b6979c997088d25ccc571564ae4ac524c386acd1c8929bcb086
+#22 exporting attestation manifest sha256:37a079030b095b6979c997088d25ccc571564ae4ac524c386acd1c8929bcb086 0.1s done
+#22 exporting manifest list sha256:9daf199fd13e787fe8647f75405bc90cb7023d47a063946d0046856e684e80ba 0.1s done
+#22 naming to docker.io/library/jobportal-api:latest
+#22 naming to docker.io/library/jobportal-api:latest 0.0s done
+#22 unpacking to docker.io/library/jobportal-api:latest
+#22 unpacking to docker.io/library/jobportal-api:latest 0.3s done
+#22 DONE 1.5s
+
+#23 resolving provenance for metadata file
+#23 DONE 0.0s
+ Image jobportal-api Built 
